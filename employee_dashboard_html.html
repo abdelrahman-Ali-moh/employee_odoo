@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة متابعة الأداء - شركة بن شجاع</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 md:p-6">
+    <div class="max-w-7xl mx-auto" id="app">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-2xl p-8 mb-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                <div class="absolute top-10 right-10 w-32 h-32 bg-white rounded-full"></div>
+                <div class="absolute bottom-10 left-20 w-40 h-40 bg-white rounded-full"></div>
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <h1 class="text-4xl font-bold text-white mb-2 drop-shadow-lg">لوحة متابعة الأداء</h1>
+                        <p class="text-blue-100 text-lg">شركة بن شجاع (العارض) - نظام إدارة الموظفين</p>
+                    </div>
+                    <div class="bg-white bg-opacity-20 backdrop-blur-sm px-6 py-3 rounded-xl">
+                        <p class="text-white text-sm">آخر تحديث</p>
+                        <p class="text-white font-bold text-lg" id="currentDate"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" id="statsCards"></div>
+
+        <!-- Filter Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <div class="flex items-center gap-4 flex-wrap">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                </svg>
+                <label class="text-gray-700 font-semibold">تصفية حسب القسم:</label>
+                <select id="departmentFilter" class="flex-1 min-w-[200px] px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                    <option value="all">جميع الأقسام</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Employee Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6" id="employeeCards"></div>
+
+        <!-- Detailed Table -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-800 to-gray-900 p-6">
+                <h2 class="text-2xl font-bold text-white">جدول البيانات التفصيلي</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">#</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">الموظف</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">القسم</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">المهام</th>
+                            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 border-b-2 border-gray-200">الاستخدام</th>
+                            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 border-b-2 border-gray-200">الحالة</th>
+                            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 border-b-2 border-gray-200">الأولوية</th>
+                            <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">الملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-6 bg-white rounded-2xl shadow-lg p-6 text-center">
+            <p class="text-gray-600">تم إنشاء التقرير في <span id="footerDate"></span> • شركة بن شجاع</p>
+        </div>
+    </div>
+
+    <script>
+        const employees = [
+            { name: 'قسم الحسابات', shortName: 'الحسابات', department: 'حسابات', task: 'إدارة الحسابات والفواتير', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية وأداء مثالي', priority: 'منخفض' },
+            { name: 'علام', shortName: 'السلامة', department: 'سلامة', task: 'ملاحظة السلامة وإدخال ملاحظات السلامة والصحة', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية والتزام تام بالنظام', priority: 'منخفض' },
+            { name: 'عجلان', shortName: 'السلامة', department: 'سلامة', task: 'ملاحظة السلامة', usage: 0, status: 'غير نشط', notes: 'لم يعمل على السيستم لانه ليس لديه وقت - يتم المتابعه يوميا', priority: 'عالي' },
+            { name: 'ذيشان (Zeeshan)', shortName: 'مشاريع', department: 'مشاريع', task: 'إنشاء معاملات المشاريع والمستخلصات', usage: 70, status: 'جيد', notes: 'يعمل بشكل جيد - يتم المتابعه يوميا لإكمال المراحل', priority: 'متوسط' },
+            { name: 'احمد جمال + محمد جمال', shortName: 'طوارئ', department: 'طوارئ', task: 'إدخال بيانات الطوارئ', usage: 70, status: 'جيد', notes: 'بدأ العمل على النظام وتحسن الأداء - يتم المتابعه يوميا لإكمال المراحل', priority: 'متوسط' },
+            { name: 'يوسف + مشارى', shortName: 'الاسفلت', department: 'اسفلت', task: 'إدخال بيانات التنسيقات والاسفلت', usage: 70, status: 'جيد', notes: 'مشارى احيانا يترك العمل على السيستم لانشغاله في اعمال اخرى - يتم المتابعه يوميا', priority: 'متوسط' },
+            { name: 'هادى + عبدالله', shortName: 'التنسيقات', department: 'تنسيقات', task: 'إدخال بيانات الرخص والتقديم عليها', usage: 100, status: 'ممتاز', notes: 'يعمل بشكل مستمر وأداء ممتاز على النظام', priority: 'منخفض' },
+            { name: 'حمدى + محمود', shortName: 'المستودع', department: 'مستودع', task: 'تسجيل حركات المخزن وإذونات الإضافة والصرف', usage: 90, status: 'ممتاز', notes: 'يعملون بنسبه ممتازة وهناك التزام كامل بالنظام', priority: 'منخفض' },
+            { name: 'محمد العوضى', shortName: 'الدرعية', department: 'مندوب', task: 'إدخال جميع معاملات الدرعية من مستخلصات', usage: 90, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
+            { name: 'مصطفى + نور', shortName: 'الشمال', department: 'مندوب', task: 'إدخال جميع معاملات الشمال من مستخلصات', usage: 90, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
+            { name: 'محمود الجندى', shortName: 'خريص', department: 'مندوب', task: 'إدخال جميع معاملات خريص من مستخلصات', usage: 95, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
+            { name: 'محمد عبدالوهاب (M.Abdelwahab)', shortName: 'التنفيذ', department: 'تنفيذ', task: 'اعمال التنفيذ (صور + تمتيرات)', usage: 95, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
+            { name: 'اسامه', shortName: 'مساح خريص', department: 'مساحين', task: 'مساح خريص', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية والتزام تام بالنظام', priority: 'منخفض' },
+            { name: 'احمد البحيرى', shortName: 'مساح الدرعية', department: 'مساحين', task: 'مساح الدرعية', usage: 95, status: 'ممتاز', notes: 'احيانا يكون معاملات خاصه بالخزامى لايوجد عليها تشييك - يتم المتابعه يوميا', priority: 'منخفض' }
+        ];
+
+        let filteredEmployees = employees;
+
+        const getStatusColor = (status) => {
+            const colors = {
+                'ممتاز': 'text-emerald-700 bg-emerald-50 border-emerald-200',
+                'جيد جداً': 'text-blue-700 bg-blue-50 border-blue-200',
+                'جيد': 'text-teal-700 bg-teal-50 border-teal-200',
+                'متوسط': 'text-amber-700 bg-amber-50 border-amber-200',
+                'ضعيف': 'text-orange-700 bg-orange-50 border-orange-200',
+                'غير نشط': 'text-red-700 bg-red-50 border-red-200'
+            };
+            return colors[status] || 'text-gray-700 bg-gray-50 border-gray-200';
+        };
+
+        const getPriorityColor = (priority) => {
+            const colors = {
+                'عالي': 'text-red-700 bg-red-100',
+                'متوسط': 'text-yellow-700 bg-yellow-100',
+                'منخفض': 'text-green-700 bg-green-100'
+            };
+            return colors[priority] || 'text-gray-700 bg-gray-100';
+        };
+
+        const getUsageColor = (usage) => {
+            if (usage >= 80) return '#10b981';
+            if (usage >= 60) return '#3b82f6';
+            if (usage >= 40) return '#f59e0b';
+            if (usage > 0) return '#f97316';
+            return '#ef4444';
+        };
+
+        function renderStatsCards() {
+            const averageUsage = Math.round(employees.reduce((sum, emp) => sum + emp.usage, 0) / employees.length);
+            const activeEmployees = employees.filter(emp => emp.usage > 0).length;
+            const highPerformers = employees.filter(emp => emp.usage >= 60).length;
+            const needsAttention = employees.filter(emp => emp.usage < 30).length;
+
+            const stats = [
+                { title: 'إجمالي الموظفين', value: employees.length, subtitle: 'عبر جميع الأقسام', color: 'from-blue-500 to-blue-600' },
+                { title: 'متوسط الاستخدام', value: averageUsage + '%', subtitle: 'معدل الأداء العام', color: 'from-emerald-500 to-emerald-600' },
+                { title: 'أداء ممتاز', value: highPerformers, subtitle: '60% فأكثر', color: 'from-purple-500 to-purple-600' },
+                { title: 'يحتاج متابعة', value: needsAttention, subtitle: 'أقل من 30%', color: 'from-orange-500 to-red-500' }
+            ];
+
+            document.getElementById('statsCards').innerHTML = stats.map(stat => `
+                <div class="bg-gradient-to-br ${stat.color} rounded-2xl shadow-xl p-6 text-white transform hover:scale-105 transition-all duration-300">
+                    <p class="text-white text-opacity-80 text-sm mb-1">${stat.title}</p>
+                    <p class="text-4xl font-bold">${stat.value}</p>
+                    <div class="mt-3 pt-3 border-t border-white border-opacity-20">
+                        <p class="text-sm text-white text-opacity-80">${stat.subtitle}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEmployeeCards() {
+            document.getElementById('employeeCards').innerHTML = filteredEmployees.map((employee, index) => `
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                    <div class="h-2 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">${employee.name}</h3>
+                                <p class="text-gray-600 text-sm">${employee.task}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${getPriorityColor(employee.priority)}">
+                                ${employee.priority}
+                            </span>
+                        </div>
+                        <div class="space-y-3 mb-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">القسم:</span>
+                                <span class="font-semibold text-gray-800">${employee.department}</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between text-sm mb-2">
+                                    <span class="text-gray-600">نسبة الاستخدام:</span>
+                                    <span class="font-bold text-xl" style="color: ${getUsageColor(employee.usage)}">
+                                        ${employee.usage}%
+                                    </span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                    <div class="h-3 rounded-full transition-all duration-500" style="width: ${employee.usage}%; background-color: ${getUsageColor(employee.usage)}"></div>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-gray-100">
+                                <span class="inline-block px-4 py-2 rounded-lg text-sm font-semibold border-2 ${getStatusColor(employee.status)}">
+                                    ${employee.status}
+                                </span>
+                            </div>
+                        </div>
+                        ${employee.notes ? `
+                        <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                            <p class="text-xs text-gray-600 leading-relaxed">${employee.notes}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEmployeeTable() {
+            document.getElementById('employeeTable').innerHTML = filteredEmployees.map((employee, index) => `
+                <tr class="border-b hover:bg-blue-50 transition-colors">
+                    <td class="px-6 py-4 text-gray-600 font-semibold">${index + 1}</td>
+                    <td class="px-6 py-4 font-bold text-gray-800">${employee.name}</td>
+                    <td class="px-6 py-4 text-gray-600">
+                        <span class="bg-gray-100 px-3 py-1 rounded-full text-sm">${employee.department}</span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-600 text-sm max-w-xs">${employee.task}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="font-bold text-lg" style="color: ${getUsageColor(employee.usage)}">
+                                ${employee.usage}%
+                            </span>
+                            <div class="w-full max-w-[120px] bg-gray-200 rounded-full h-2">
+                                <div class="h-2 rounded-full transition-all" style="width: ${employee.usage}%; background-color: ${getUsageColor(employee.usage)}"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="inline-block px-4 py-2 rounded-lg text-sm font-bold border-2 ${getStatusColor(employee.status)}">
+                            ${employee.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${getPriorityColor(employee.priority)}">
+                            ${employee.priority}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-600 text-sm max-w-sm">${employee.notes}</td>
+                </tr>
+            `).join('');
+        }
+
+        function populateDepartmentFilter() {
+            const departments = ['all', ...new Set(employees.map(e => e.department))];
+            const select = document.getElementById('departmentFilter');
+            select.innerHTML = departments.map(dept => {
+                const count = dept === 'all' ? employees.length : employees.filter(e => e.department === dept).length;
+                const label = dept === 'all' ? 'جميع الأقسام' : dept;
+                return `<option value="${dept}">${label} (${count})</option>`;
+            }).join('');
+        }
+
+        function filterEmployees(department) {
+            filteredEmployees = department === 'all' ? employees : employees.filter(emp => emp.department === department);
+            renderEmployeeCards();
+            renderEmployeeTable();
+        }
+
+        function init() {
+            const currentDate = new Date().toLocaleDateString('ar-SA');
+            document.getElementById('currentDate').textContent = currentDate;
+            document.getElementById('footerDate').textContent = currentDate;
+            
+            renderStatsCards();
+            populateDepartmentFilter();
+            renderEmployeeCards();
+            renderEmployeeTable();
+
+            document.getElementById('departmentFilter').addEventListener('change', (e) => {
+                filterEmployees(e.target.value);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
