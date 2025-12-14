@@ -24,7 +24,7 @@
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
                         <h1 class="text-4xl font-bold text-white mb-2 drop-shadow-lg">لوحة متابعة الأداء</h1>
-                        <p class="text-blue-100 text-lg">شركة بن شجاع (العارض) - نظام إدارة الموظفين</p>
+                        <p class="text-blue-100 text-lg">شركة بن شجاع - نظام متابعه الموظفين على سيستم odoo</p>
                     </div>
                     <div class="bg-white bg-opacity-20 backdrop-blur-sm px-6 py-3 rounded-xl">
                         <p class="text-white text-sm">آخر تحديث</p>
@@ -68,7 +68,6 @@
                             <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">المهام</th>
                             <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 border-b-2 border-gray-200">الاستخدام</th>
                             <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 border-b-2 border-gray-200">الحالة</th>
-                            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 border-b-2 border-gray-200">الأولوية</th>
                             <th class="px-6 py-4 text-right text-sm font-bold text-gray-700 border-b-2 border-gray-200">الملاحظات</th>
                         </tr>
                     </thead>
@@ -84,22 +83,22 @@
     </div>
 
     <script>
-        const employees = [
-            { name: 'قسم الحسابات', shortName: 'الحسابات', department: 'حسابات', task: 'إدارة الحسابات والفواتير', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية وأداء مثالي', priority: 'منخفض' },
-            { name: 'علام', shortName: 'السلامة', department: 'سلامة', task: 'ملاحظة السلامة وإدخال ملاحظات السلامة والصحة', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية والتزام تام بالنظام', priority: 'منخفض' },
-            { name: 'عجلان', shortName: 'السلامة', department: 'سلامة', task: 'ملاحظة السلامة', usage: 0, status: 'غير نشط', notes: 'لم يعمل على السيستم لانه ليس لديه وقت - يتم المتابعه يوميا', priority: 'عالي' },
-            { name: 'ذيشان (Zeeshan)', shortName: 'مشاريع', department: 'مشاريع', task: 'إنشاء معاملات المشاريع والمستخلصات', usage: 70, status: 'جيد', notes: 'يعمل بشكل جيد - يتم المتابعه يوميا لإكمال المراحل', priority: 'متوسط' },
-            { name: 'احمد جمال + محمد جمال', shortName: 'طوارئ', department: 'طوارئ', task: 'إدخال بيانات الطوارئ', usage: 70, status: 'جيد', notes: 'بدأ العمل على النظام وتحسن الأداء - يتم المتابعه يوميا لإكمال المراحل', priority: 'متوسط' },
-            { name: 'يوسف + مشارى', shortName: 'الاسفلت', department: 'اسفلت', task: 'إدخال بيانات التنسيقات والاسفلت', usage: 70, status: 'جيد', notes: 'مشارى احيانا يترك العمل على السيستم لانشغاله في اعمال اخرى - يتم المتابعه يوميا', priority: 'متوسط' },
-            { name: 'هادى + عبدالله', shortName: 'التنسيقات', department: 'تنسيقات', task: 'إدخال بيانات الرخص والتقديم عليها', usage: 100, status: 'ممتاز', notes: 'يعمل بشكل مستمر وأداء ممتاز على النظام', priority: 'منخفض' },
-            { name: 'حمدى + محمود', shortName: 'المستودع', department: 'مستودع', task: 'تسجيل حركات المخزن وإذونات الإضافة والصرف', usage: 90, status: 'ممتاز', notes: 'يعملون بنسبه ممتازة وهناك التزام كامل بالنظام', priority: 'منخفض' },
-            { name: 'محمد العوضى', shortName: 'الدرعية', department: 'مندوب', task: 'إدخال جميع معاملات الدرعية من مستخلصات', usage: 90, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
-            { name: 'مصطفى + نور', shortName: 'الشمال', department: 'مندوب', task: 'إدخال جميع معاملات الشمال من مستخلصات', usage: 90, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
-            { name: 'محمود الجندى', shortName: 'خريص', department: 'مندوب', task: 'إدخال جميع معاملات خريص من مستخلصات', usage: 95, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
-            { name: 'محمد عبدالوهاب (M.Abdelwahab)', shortName: 'التنفيذ', department: 'تنفيذ', task: 'اعمال التنفيذ (صور + تمتيرات)', usage: 95, status: 'ممتاز', notes: 'باقى اكمال مراحل الى المستخلص النهائى - يتم المتابعه', priority: 'منخفض' },
-            { name: 'اسامه', shortName: 'مساح خريص', department: 'مساحين', task: 'مساح خريص', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية والتزام تام بالنظام', priority: 'منخفض' },
-            { name: 'احمد البحيرى', shortName: 'مساح الدرعية', department: 'مساحين', task: 'مساح الدرعية', usage: 95, status: 'ممتاز', notes: 'احيانا يكون معاملات خاصه بالخزامى لايوجد عليها تشييك - يتم المتابعه يوميا', priority: 'منخفض' }
-        ];
+const employees = [
+    { name: 'قسم الحسابات', shortName: 'الحسابات', department: 'حسابات', task: 'إدارة الحسابات والفواتير', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية وأداء مثالي' },
+    { name: 'علام', shortName: 'السلامة', department: 'سلامة', task: 'ملاحظة السلامة وإدخال ملاحظات السلامة والصحة', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية والتزام تام بالنظام' },
+    { name: 'عجلان', shortName: 'السلامة', department: 'سلامة', task: 'ملاحظة السلامة', usage: 0, status: 'غير نشط', notes: 'لم يعمل على السيستم لانه ليس لديه وقت - يتم المتابعه يوميا'},
+    { name: 'ذيشان (Zeeshan)', shortName: 'مشاريع', department: 'مشاريع', task: 'إنشاء معاملات المشاريع والمستخلصات', usage: 70, status: 'جيد', notes: 'يعمل بشكل جيد - يتم المتابعه يوميا لإكمال المراحل' },
+    { name: 'احمد جمال + محمد جمال', shortName: 'طوارئ', department: 'طوارئ', task: 'إدخال بيانات الطوارئ', usage: 70, status: 'جيد', notes: 'بدأ العمل على النظام وتحسن الأداء - يتم المتابعه يوميا لإكمال المراحل'},
+    { name: 'يوسف + مشارى', shortName: 'الاسفلت', department: 'اسفلت', task: 'إدخال بيانات التنسيقات والاسفلت', usage: 70, status: 'جيد', notes: 'مشارى احيانا يترك العمل على السيستم لانشغاله في اعمال اخرى - يتم المتابعه يوميا'},
+    { name: 'هادى + عبدالله', shortName: 'التنسيقات', department: 'تنسيقات', task: 'إدخال بيانات الرخص والتقديم عليها', usage: 100, status: 'ممتاز', notes: 'يعمل بشكل مستمر وأداء ممتاز على النظام' },
+    { name: 'حمدى + محمود', shortName: 'المستودع', department: 'مستودع', task: 'تسجيل حركات المخزن وإذونات الإضافة والصرف', usage: 90, status: 'ممتاز', notes: 'يعملون بنسبه ممتازة وهناك التزام كامل بالنظام'},
+    { name: 'محمد العوضى', shortName: 'الدرعية', department: 'مندوب', task: 'إدخال جميع معاملات الدرعية من مستخلصات', usage: 90, status: 'ممتاز', notes: '  باقى اكمال المراحل الى اصدار المستخلص - يتم المتابعه'},
+    { name: 'مصطفى + نور', shortName: 'الشمال', department: 'مندوب', task: 'إدخال جميع معاملات الشمال من مستخلصات', usage: 90, status: 'ممتاز', notes: ' باقى اكمال المراحل الى اصدار المستخلص - يتم المتابعه' },
+    { name: 'محمود الجندى', shortName: 'خريص', department: 'مندوب', task: 'إدخال جميع معاملات خريص من مستخلصات', usage: 95, status: 'ممتاز', notes: ' باقى اكمال المراحل الى اصدار المستخلص - يتم المتابعه'},
+    { name: 'محمد عبدالوهاب (M.Abdelwahab)', shortName: 'التنفيذ', department: 'تنفيذ', task: 'اعمال التنفيذ (صور + تمتيرات)', usage: 95, status: 'ممتاز', notes: ' باقى اكمال المراحل الى اصدار المستخلص - يتم المتابعه'},
+    { name: 'اسامه', shortName: 'مساح خريص', department: 'مساحين', task: 'مساح خريص', usage: 100, status: 'ممتاز', notes: 'يعمل بكفاءة عالية والتزام تام بالنظام' },
+    { name: 'احمد البحيرى', shortName: 'مساح الدرعية', department: 'مساحين', task: 'مساح الدرعية', usage: 95, status: 'ممتاز', notes: 'احيانا يكون معاملات خاصه بالخزامى لايوجد عليها تشييك - يتم المتابعه يوميا'}
+];
 
         let filteredEmployees = employees;
 
@@ -113,15 +112,6 @@
                 'غير نشط': 'text-red-700 bg-red-50 border-red-200'
             };
             return colors[status] || 'text-gray-700 bg-gray-50 border-gray-200';
-        };
-
-        const getPriorityColor = (priority) => {
-            const colors = {
-                'عالي': 'text-red-700 bg-red-100',
-                'متوسط': 'text-yellow-700 bg-yellow-100',
-                'منخفض': 'text-green-700 bg-green-100'
-            };
-            return colors[priority] || 'text-gray-700 bg-gray-100';
         };
 
         const getUsageColor = (usage) => {
@@ -166,9 +156,6 @@
                                 <h3 class="text-xl font-bold text-gray-800 mb-2">${employee.name}</h3>
                                 <p class="text-gray-600 text-sm">${employee.task}</p>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-xs font-bold ${getPriorityColor(employee.priority)}">
-                                ${employee.priority}
-                            </span>
                         </div>
                         <div class="space-y-3 mb-4">
                             <div class="flex items-center justify-between text-sm">
@@ -224,11 +211,6 @@
                     <td class="px-6 py-4 text-center">
                         <span class="inline-block px-4 py-2 rounded-lg text-sm font-bold border-2 ${getStatusColor(employee.status)}">
                             ${employee.status}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${getPriorityColor(employee.priority)}">
-                            ${employee.priority}
                         </span>
                     </td>
                     <td class="px-6 py-4 text-gray-600 text-sm max-w-sm">${employee.notes}</td>
